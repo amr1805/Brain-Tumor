@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 
 # Load the trained model
-model = load_model('brain_tumor_model.keras')
+model = load_model('model.keras')
 
 # Define the class names
 class_names = ['glioma', 'meningioma', 'notumor', 'pituitary']
