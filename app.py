@@ -4,24 +4,32 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-# Load the trained model (updated path)
-model = load_model('cnn_model.keras')
+# Load the trained model
+model = load_model('model.keras')
 
-# Define the class names (matching training notebook order/casing)
+# Define the class names from the notebook
 class_names = ['Glioma', 'Meninigioma', 'Notumor', 'Pituitary']
+
 
 def predict_image(img):
     try:
-        # Preprocess the image to 168x168 grayscale as per training
-        # Convert to grayscale ('L') and resize
-        img = img.convert('L').resize((168, 168))
-        img_array = image.img_to_array(img)  # shape: (168, 168, 1)
+        # Preprocess the image
+        # Resize to the model's expected input shape (168, 168)
+        img = image.smart_resize(img, (168, 168))
+        # Convert PIL image to numpy array and ensure it's writable
+        img_array = np.array(img)
+        # Add channel dimension if it's a grayscale image
+        if img_array.ndim == 2:
+            img_array = np.expand_dims(img_array, axis=-1)
+        # Convert to grayscale if it's a color image
+        elif img_array.shape[-1] == 3:
+            img_array = tf.image.rgb_to_grayscale(img_array)
+
+        # Add the batch dimension
         img_array = np.expand_dims(img_array, axis=0)
-        
-        # Create a writable copy of the array
-        img_array = img_array.copy()
-        
-        img_array /= 255.
+
+        # Normalize the image data
+        img_array = img_array.astype('float32') / 255.0
 
         # Make a prediction
         prediction = model.predict(img_array)
