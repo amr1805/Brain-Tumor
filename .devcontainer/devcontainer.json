@@ -6,8 +6,6 @@
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-toolsai.jupyter",
-        "Google.gemini",
         "github.copilot"
       ]
     }
